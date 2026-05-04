@@ -42,16 +42,17 @@ function Admin() {
     if (!userId) return;
     (async () => {
       const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
-      const admin = !!data;
-      setIsAdmin(admin);
+      let admin = !!data;
       if (!admin) {
-        // Bootstrap: if no admin exists at all yet, promote this user.
-        const { data: anyAdmin } = await supabase.from("user_roles").select("id").eq("role", "admin").limit(1).maybeSingle();
-        if (!anyAdmin) {
-          // Self-insert blocked by RLS; require manual promotion. Show message.
+        // Try to bootstrap as first admin (RLS allows only when no admin exists)
+        const { error: insErr } = await supabase.from("user_roles").insert({ user_id: userId, role: "admin" });
+        if (!insErr) {
+          admin = true;
+          toast.success("Admin access granted");
         }
       }
-      loadProjects();
+      setIsAdmin(admin);
+      if (admin) loadProjects();
     })();
   }, [userId]);
 
