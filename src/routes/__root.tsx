@@ -37,9 +37,13 @@ export const Route = createRootRoute({
       { name: "description", content: "Explore the work and services of EVIMERO — a creative professional delivering bold design and strategy." },
       { name: "author", content: "EVIMERO" },
       { property: "og:title", content: "EVIMERO | Creative Portfolio" },
-      { property: "og:description", content: "Bold design, branding, and digital experiences crafted by EVIMERO." },
+      { property: "og:description", content: "Explore the work and services of EVIMERO — a creative professional delivering bold design and strategy." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "EVIMERO | Creative Portfolio" },
+      { name: "twitter:description", content: "Explore the work and services of EVIMERO — a creative professional delivering bold design and strategy." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9e601683-3b33-4578-9f9a-2c4f45fedeac/id-preview-a1addaff--ce0faabe-22d6-4623-a1b9-e1069c2ff786.lovable.app-1777912362208.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9e601683-3b33-4578-9f9a-2c4f45fedeac/id-preview-a1addaff--ce0faabe-22d6-4623-a1b9-e1069c2ff786.lovable.app-1777912362208.png" },
     ],
     links: [
       {
