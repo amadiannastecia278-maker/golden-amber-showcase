@@ -1,4 +1,8 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Navbar } from "@/components/site/Navbar";
+import { Footer } from "@/components/site/Footer";
+import { CursorGlow } from "@/components/site/CursorGlow";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -29,14 +33,13 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "EVIMERO | Creative Portfolio" },
+      { name: "description", content: "Explore the work and services of EVIMERO — a creative professional delivering bold design and strategy." },
+      { name: "author", content: "EVIMERO" },
+      { property: "og:title", content: "EVIMERO | Creative Portfolio" },
+      { property: "og:description", content: "Bold design, branding, and digital experiences crafted by EVIMERO." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
@@ -52,11 +55,11 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-background text-foreground">
         {children}
         <Scripts />
       </body>
@@ -65,5 +68,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+  return (
+    <>
+      <CursorGlow />
+      {!isAdmin && <Navbar />}
+      <main className={isAdmin ? "" : "pt-20"}>
+        <Outlet />
+      </main>
+      {!isAdmin && <Footer />}
+      <Toaster theme="dark" richColors position="top-center" />
+    </>
+  );
 }
