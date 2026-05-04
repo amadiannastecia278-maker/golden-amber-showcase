@@ -1,4 +1,4 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { CursorGlow } from "@/components/site/CursorGlow";
@@ -68,7 +68,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const isAdmin = typeof window !== "undefined" && window.location.pathname.startsWith("/admin");
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith("/admin") || pathname.startsWith("/auth");
   return (
     <>
       <CursorGlow />
