@@ -23,6 +23,11 @@ export function Navbar() {
 
   useEffect(() => { setOpen(false); }, [pathname]);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
@@ -70,19 +75,21 @@ export function Navbar() {
 
       {/* Mobile overlay */}
       {open && (
-        <div className="md:hidden fixed inset-0 top-[60px] bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-in fade-in">
+        <div className="md:hidden fixed inset-0 z-40 bg-background/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-in fade-in">
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="font-display text-3xl font-bold uppercase tracking-tight hover:text-gold transition-colors"
+              onClick={() => setOpen(false)}
+              className="font-display text-4xl font-bold uppercase tracking-tight hover:text-gold transition-colors"
             >
               {l.label}
             </Link>
           ))}
           <Link
             to="/contact"
-            className="mt-4 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold"
+            onClick={() => setOpen(false)}
+            className="mt-4 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold shadow-gold"
           >
             Let's Talk
           </Link>
