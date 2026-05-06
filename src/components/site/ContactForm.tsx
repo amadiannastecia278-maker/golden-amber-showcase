@@ -28,7 +28,7 @@ export function ContactForm({ variant = "compact", source = "home" }: { variant?
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("contact_submissions").insert({
+    const payload = {
       full_name: parsed.data.full_name,
       email: parsed.data.email,
       phone: parsed.data.phone || null,
@@ -36,12 +36,21 @@ export function ContactForm({ variant = "compact", source = "home" }: { variant?
       message: parsed.data.message,
       budget_range: parsed.data.budget_range || null,
       source,
-    });
-    setLoading(false);
+    };
+    const { error } = await supabase.from("contact_submissions").insert(payload);
     if (error) {
-      toast.error("Could not send. Try again.");
+      setLoading(false);
+      toast.error("Could not send. Please try again.");
       return;
     }
+    // Fire-and-await email notification (non-blocking failure)
+    try {
+      const { error: fnErr } = await supabase.functions.invoke("send-contact-email", { body: payload });
+      if (fnErr) console.warn("Email notify failed:", fnErr);
+    } catch (err) {
+      console.warn("Email notify exception:", err);
+    }
+    setLoading(false);
     toast.success("Message sent. EVIMERO will be in touch.");
     setForm({ full_name: "", email: "", phone: "", subject: "", message: "", budget_range: "" });
   };
