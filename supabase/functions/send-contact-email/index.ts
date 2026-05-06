@@ -8,6 +8,9 @@ const corsHeaders = {
 
 const TO_EMAIL = "amzybaby125@gmail.com";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+// Override by setting the RESEND_FROM_EMAIL secret to e.g. "EVIMERO <hello@evimero.studio>"
+// Domain MUST be verified in Resend or sends will be rejected.
+const DEFAULT_FROM = "EVIMERO Contact <onboarding@resend.dev>";
 
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
@@ -58,7 +61,7 @@ Deno.serve(async (req) => {
         "X-Connection-Api-Key": RESEND_API_KEY,
       },
       body: JSON.stringify({
-        from: "EVIMERO Contact <onboarding@resend.dev>",
+        from: Deno.env.get("RESEND_FROM_EMAIL") || DEFAULT_FROM,
         to: [TO_EMAIL],
         reply_to: email,
         subject: `[EVIMERO] ${subject}`,

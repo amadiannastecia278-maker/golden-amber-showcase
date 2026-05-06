@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin")({
 type Project = {
   id: string; title: string; category: string; description: string;
   tools: string | null; external_link: string | null; image_url: string; published: boolean;
+  slug: string | null;
 };
 
 const CATS = ["Branding", "Web Design", "Photography", "Motion"];
@@ -23,7 +24,7 @@ function Admin() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
-    title: "", category: "Branding", description: "", tools: "", external_link: "", image_url: "", published: true,
+    title: "", category: "Branding", description: "", tools: "", external_link: "", image_url: "", published: true, slug: "",
   });
   const [uploading, setUploading] = useState(false);
 
@@ -82,6 +83,7 @@ function Admin() {
       title: form.title, category: form.category, description: form.description,
       tools: form.tools || null, external_link: form.external_link || null,
       image_url: form.image_url, published: form.published,
+      slug: (form.slug || form.title).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || null,
     };
     const { error } = editingId
       ? await supabase.from("projects").update(payload).eq("id", editingId)
@@ -94,7 +96,7 @@ function Admin() {
 
   const resetForm = () => {
     setEditingId(null);
-    setForm({ title: "", category: "Branding", description: "", tools: "", external_link: "", image_url: "", published: true });
+    setForm({ title: "", category: "Branding", description: "", tools: "", external_link: "", image_url: "", published: true, slug: "" });
   };
 
   const startEdit = (p: Project) => {
@@ -103,6 +105,7 @@ function Admin() {
       title: p.title, category: p.category, description: p.description,
       tools: p.tools ?? "", external_link: p.external_link ?? "",
       image_url: p.image_url, published: p.published,
+      slug: p.slug ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -165,6 +168,8 @@ function Admin() {
           <form onSubmit={submit} className="grid gap-3 bg-surface border border-border rounded-2xl p-6">
             <input required placeholder="Title" className="rounded-lg bg-background border border-border px-3 py-2.5 focus:border-primary outline-none"
               value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+            <input placeholder="Slug (auto from title if blank)" className="rounded-lg bg-background border border-border px-3 py-2.5 focus:border-primary outline-none font-mono text-sm"
+              value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
             <select className="rounded-lg bg-background border border-border px-3 py-2.5 focus:border-primary outline-none"
               value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
               {CATS.map((c) => <option key={c}>{c}</option>)}
