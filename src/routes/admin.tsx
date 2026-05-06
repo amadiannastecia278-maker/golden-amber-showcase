@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Trash2, LogOut, Upload } from "lucide-react";
+import { Plus, Trash2, LogOut, Upload, Pencil, Eye, EyeOff, X } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: Admin,
@@ -21,6 +21,7 @@ function Admin() {
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
     title: "", category: "Branding", description: "", tools: "", external_link: "", image_url: "", published: true,
   });
@@ -77,14 +78,39 @@ function Admin() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.image_url) return toast.error("Upload a project image first");
-    const { error } = await supabase.from("projects").insert({
+    const payload = {
       title: form.title, category: form.category, description: form.description,
       tools: form.tools || null, external_link: form.external_link || null,
       image_url: form.image_url, published: form.published,
-    });
+    };
+    const { error } = editingId
+      ? await supabase.from("projects").update(payload).eq("id", editingId)
+      : await supabase.from("projects").insert(payload);
     if (error) return toast.error(error.message);
-    toast.success("Project published");
+    toast.success(editingId ? "Project updated" : "Project saved");
+    resetForm();
+    loadProjects();
+  };
+
+  const resetForm = () => {
+    setEditingId(null);
     setForm({ title: "", category: "Branding", description: "", tools: "", external_link: "", image_url: "", published: true });
+  };
+
+  const startEdit = (p: Project) => {
+    setEditingId(p.id);
+    setForm({
+      title: p.title, category: p.category, description: p.description,
+      tools: p.tools ?? "", external_link: p.external_link ?? "",
+      image_url: p.image_url, published: p.published,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const togglePublished = async (p: Project) => {
+    const { error } = await supabase.from("projects").update({ published: !p.published }).eq("id", p.id);
+    if (error) return toast.error(error.message);
+    toast.success(!p.published ? "Published" : "Moved to draft");
     loadProjects();
   };
 
@@ -128,7 +154,14 @@ function Admin() {
 
       <div className="max-w-6xl mx-auto p-8 grid lg:grid-cols-5 gap-8">
         <div className="lg:col-span-2">
-          <h2 className="font-display text-2xl font-bold mb-6 flex items-center gap-2"><Plus size={20} /> New Project</h2>
+          <h2 className="font-display text-2xl font-bold mb-6 flex items-center gap-2">
+            {editingId ? <Pencil size={20} /> : <Plus size={20} />} {editingId ? "Edit Project" : "New Project"}
+            {editingId && (
+              <button type="button" onClick={resetForm} className="ml-auto text-xs text-muted-foreground hover:text-gold inline-flex items-center gap-1">
+                <X size={14} /> Cancel
+              </button>
+            )}
+          </h2>
           <form onSubmit={submit} className="grid gap-3 bg-surface border border-border rounded-2xl p-6">
             <input required placeholder="Title" className="rounded-lg bg-background border border-border px-3 py-2.5 focus:border-primary outline-none"
               value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
@@ -152,11 +185,11 @@ function Admin() {
 
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               <input type="checkbox" checked={form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} />
-              Publish immediately
+              {form.published ? "Published" : "Draft"}
             </label>
 
             <button className="rounded-full bg-primary text-primary-foreground font-semibold py-3 hover:bg-primary-glow transition-colors">
-              Save Project
+              {editingId ? "Update Project" : "Save Project"}
             </button>
           </form>
         </div>
@@ -173,7 +206,13 @@ function Admin() {
                   <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
                   <p className="text-xs mt-1">{p.published ? <span className="text-green-400">Live</span> : <span className="text-muted-foreground">Draft</span>}</p>
                 </div>
-                <button onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive p-2"><Trash2 size={18} /></button>
+                <div className="flex flex-col gap-1">
+                  <button title={p.published ? "Unpublish" : "Publish"} onClick={() => togglePublished(p)} className="text-muted-foreground hover:text-gold p-2">
+                    {p.published ? <Eye size={18} /> : <EyeOff size={18} />}
+                  </button>
+                  <button title="Edit" onClick={() => startEdit(p)} className="text-muted-foreground hover:text-foreground p-2"><Pencil size={18} /></button>
+                  <button title="Delete" onClick={() => remove(p.id)} className="text-muted-foreground hover:text-destructive p-2"><Trash2 size={18} /></button>
+                </div>
               </div>
             ))}
             {projects.length === 0 && <p className="text-muted-foreground text-sm">No projects yet.</p>}
