@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import work1 from "@/assets/work-1.jpg";
@@ -12,7 +13,13 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "EVIMERO | Creative Portfolio" },
-      { name: "description", content: "Bold design, branding, and digital experiences crafted by EVIMERO." },
+      { name: "description", content: "Bold design, branding, and digital experiences crafted by EVIMERO — an independent creative studio." },
+      { property: "og:title", content: "EVIMERO | Creative Portfolio" },
+      { property: "og:description", content: "Bold design, branding, and digital experiences crafted by EVIMERO." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "EVIMERO | Creative Portfolio" },
+      { name: "twitter:description", content: "Bold design, branding, and digital experiences." },
     ],
   }),
   component: Home,
@@ -26,6 +33,22 @@ const featured = [
 ];
 
 const heroLine = "WE CREATE. WE BUILD. WE DELIVER.".split(" ");
+const tagline = "Independent creative studio crafting brands, interfaces and stories that refuse to blend in.";
+
+function Typewriter({ text }: { text: string }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (i >= text.length) return;
+    const id = setTimeout(() => setI(i + 1), 28);
+    return () => clearTimeout(id);
+  }, [i, text]);
+  return (
+    <span>
+      {text.slice(0, i)}
+      <span className="inline-block w-[2px] h-[1em] align-middle bg-gold ml-1 animate-pulse" />
+    </span>
+  );
+}
 
 function Home() {
   return (
@@ -63,10 +86,9 @@ function Home() {
 
           <motion.p
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.8 }}
-            className="mt-10 max-w-xl text-lg text-muted-foreground leading-relaxed"
+            className="mt-10 max-w-xl text-lg text-muted-foreground leading-relaxed min-h-[3.5rem]"
           >
-            EVIMERO is an independent creative practice — building brands, interfaces and stories
-            that refuse to blend in. Crafted with intent. Delivered with edge.
+            <Typewriter text={tagline} />
           </motion.p>
 
           <motion.div
