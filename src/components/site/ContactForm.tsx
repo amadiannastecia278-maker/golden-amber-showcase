@@ -19,9 +19,17 @@ export function ContactForm({ variant = "compact", source = "home" }: { variant?
   const [form, setForm] = useState({
     full_name: "", email: "", phone: "", subject: "", message: "", budget_range: "",
   });
+  // Honeypot — bots fill hidden fields; real users won't.
+  const [website, setWebsite] = useState("");
+  const [renderedAt] = useState(() => Date.now());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Honeypot triggered or form submitted suspiciously fast (<2s) — silently drop.
+    if (website || Date.now() - renderedAt < 2000) {
+      toast.success("Message sent. EVIMERO will be in touch.");
+      return;
+    }
     const parsed = baseSchema.safeParse(form);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Invalid input");
@@ -59,6 +67,13 @@ export function ContactForm({ variant = "compact", source = "home" }: { variant?
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
+      {/* Honeypot — visually hidden from users, attractive to bots */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", top: "auto", width: 1, height: 1, overflow: "hidden" }}>
+        <label>
+          Website
+          <input type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+        </label>
+      </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <input className={inputClass} placeholder="Full Name *"
           value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
