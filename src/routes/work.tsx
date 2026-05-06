@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUpRight, X, ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import work1 from "@/assets/work-1.jpg";
 import work2 from "@/assets/work-2.jpg";
 import work3 from "@/assets/work-3.jpg";
@@ -23,6 +23,7 @@ export const Route = createFileRoute("/work")({
 type Project = {
   id: string; title: string; category: string; description: string;
   tools: string | null; external_link: string | null; image_url: string;
+  slug?: string | null;
 };
 
 const fallback: Project[] = [
@@ -39,7 +40,6 @@ const categories = ["All", "Branding", "Web Design", "Photography", "Motion"];
 function Work() {
   const [projects, setProjects] = useState<Project[]>(fallback);
   const [filter, setFilter] = useState("All");
-  const [open, setOpen] = useState<Project | null>(null);
 
   useEffect(() => {
     supabase.from("projects").select("*").eq("published", true).order("created_at", { ascending: false })
@@ -80,16 +80,20 @@ function Work() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
         <AnimatePresence mode="popLayout">
           {visible.map((p, i) => (
-            <motion.button
+            <motion.div
               layout
               key={p.id}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4, delay: i * 0.04 }}
-              onClick={() => setOpen(p)}
-              className="group text-left relative overflow-hidden rounded-2xl bg-surface aspect-[4/5]"
+              className="group relative overflow-hidden rounded-2xl bg-surface aspect-[4/5]"
             >
+              <Link
+                to="/work/$ident"
+                params={{ ident: p.slug || p.id }}
+                className="absolute inset-0 block"
+              >
               <img src={p.image_url} alt={p.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-90" />
               <div className="absolute inset-0 p-6 flex flex-col justify-end">
@@ -99,47 +103,11 @@ function Work() {
                   View Project <ArrowUpRight size={16} />
                 </span>
               </div>
-            </motion.button>
+              </Link>
+            </motion.div>
           ))}
         </AnimatePresence>
       </div>
-
-      {/* Lightbox */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setOpen(null)}
-            className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
-          >
-            <motion.div
-              initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95 }}
-              onClick={(e) => e.stopPropagation()}
-              className="max-w-5xl w-full bg-surface rounded-3xl overflow-hidden border border-border my-12"
-            >
-              <div className="relative">
-                <img src={open.image_url} alt={open.title} className="w-full max-h-[60vh] object-cover" />
-                <button onClick={() => setOpen(null)} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition">
-                  <X size={18} />
-                </button>
-              </div>
-              <div className="p-8 md:p-10">
-                <p className="text-xs uppercase tracking-widest text-gold mb-3">{open.category}</p>
-                <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">{open.title}</h2>
-                <p className="text-muted-foreground leading-relaxed">{open.description}</p>
-                {open.tools && (
-                  <p className="mt-6 text-sm"><span className="text-foreground/70">Tools: </span><span className="text-gold">{open.tools}</span></p>
-                )}
-                {open.external_link && (
-                  <a href={open.external_link} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground font-semibold px-6 py-3 hover:bg-primary-glow transition-colors">
-                    Visit Project <ExternalLink size={16} />
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
