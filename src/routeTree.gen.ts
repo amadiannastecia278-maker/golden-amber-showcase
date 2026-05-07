@@ -13,6 +13,7 @@ import { Route as WorkRouteImport } from './routes/work'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AmasteciaAdminRouteImport } from './routes/amastecia-admin'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -36,6 +37,11 @@ const ContactRoute = ContactRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AmasteciaAdminRoute = AmasteciaAdminRouteImport.update({
+  id: '/amastecia-admin',
+  path: '/amastecia-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/amastecia-admin': typeof AmasteciaAdminRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/amastecia-admin': typeof AmasteciaAdminRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/amastecia-admin': typeof AmasteciaAdminRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/amastecia-admin'
     | '/auth'
     | '/contact'
     | '/shop'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/amastecia-admin'
     | '/auth'
     | '/contact'
     | '/shop'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin'
+    | '/amastecia-admin'
     | '/auth'
     | '/contact'
     | '/shop'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
+  AmasteciaAdminRoute: typeof AmasteciaAdminRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   ShopRoute: typeof ShopRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/amastecia-admin': {
+      id: '/amastecia-admin'
+      path: '/amastecia-admin'
+      fullPath: '/amastecia-admin'
+      preLoaderRoute: typeof AmasteciaAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -208,6 +228,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
+  AmasteciaAdminRoute: AmasteciaAdminRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   ShopRoute: ShopRoute,
