@@ -3,18 +3,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowUpRight } from "lucide-react";
-import work1 from "@/assets/work-1.jpg";
-import work2 from "@/assets/work-2.jpg";
-import work3 from "@/assets/work-3.jpg";
-import work4 from "@/assets/work-4.jpg";
 
 export const Route = createFileRoute("/work")({
   head: () => ({
     meta: [
-      { title: "Work — EVIMERO" },
-      { name: "description", content: "Selected projects: branding, web design, photography and motion by EVIMERO." },
-      { property: "og:title", content: "EVIMERO — Selected Work" },
-      { property: "og:description", content: "Explore the projects EVIMERO has crafted." },
+      { title: "Work — Amadi Annastecia Amarachi" },
+      { name: "description", content: "Selected web, mobile, and full stack projects by Annastecia." },
+      { property: "og:title", content: "Annastecia — Selected Work" },
+      { property: "og:description", content: "Projects across web apps, mobile, UI/UX and backend." },
     ],
   }),
   component: Work,
@@ -26,49 +22,37 @@ type Project = {
   slug?: string | null;
 };
 
-const fallback: Project[] = [
-  { id: "f1", title: "Aureum Identity", category: "Branding", description: "A monochrome identity built around restraint, ritual and a single golden gesture.", tools: "Figma · Illustrator", external_link: null, image_url: work1 },
-  { id: "f2", title: "Northbound Studio", category: "Web Design", description: "An editorial portfolio for a New York architecture studio. Slow scroll, big type.", tools: "Framer · Figma", external_link: null, image_url: work2 },
-  { id: "f3", title: "Liminal Hours", category: "Photography", description: "Series shot at golden hour. Silhouettes and absence.", tools: "Sony A7IV · Lightroom", external_link: null, image_url: work3 },
-  { id: "f4", title: "Kinetic Volume", category: "Motion", description: "A sound-reactive 3D logo system for an underground music label.", tools: "Cinema 4D · Octane", external_link: null, image_url: work4 },
-  { id: "f5", title: "Halcyon Brew", category: "Branding", description: "Specialty coffee identity with a poetic, nocturnal edge.", tools: "Illustrator · InDesign", external_link: null, image_url: work1 },
-  { id: "f6", title: "Verge Quarterly", category: "Web Design", description: "A digital quarterly for emerging architects. Type-led, image-rich.", tools: "Next.js · Sanity", external_link: null, image_url: work2 },
-];
-
-const categories = ["All", "Branding", "Web Design", "Photography", "Motion"];
+const categories = ["All", "Web Apps", "Mobile Apps", "UI/UX", "Open Source", "Backend"];
 
 function Work() {
-  const [projects, setProjects] = useState<Project[]>(fallback);
+  const [projects, setProjects] = useState<Project[] | null>(null);
   const [filter, setFilter] = useState("All");
 
   useEffect(() => {
     supabase.from("projects").select("*").eq("published", true).order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (data && data.length > 0) setProjects(data as Project[]);
-      });
+      .then(({ data }) => setProjects((data as Project[]) ?? []));
   }, []);
 
-  const visible = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+  const visible = !projects ? null : filter === "All" ? projects : projects.filter((p) => p.category === filter);
 
   return (
     <div className="container mx-auto px-6">
       <section className="pt-12 pb-12">
-        <p className="text-xs uppercase tracking-[0.3em] text-gold mb-4">[Projects]</p>
-        <h1 className="font-display font-bold text-[clamp(2.8rem,9vw,8rem)] leading-[0.95] uppercase">
-          My <span className="text-gold italic">Work</span>
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-silver mb-4">[Projects]</p>
+        <h1 className="font-display font-bold text-[clamp(2.6rem,9vw,7.5rem)] leading-[0.98] gradient-silver-text">
+          My <em className="italic">Work</em>
         </h1>
       </section>
 
-      {/* Filter */}
       <div className="flex flex-wrap gap-2 mb-12">
         {categories.map((c) => (
           <button
             key={c}
             onClick={() => setFilter(c)}
-            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+            className={`px-5 py-2 rounded-full text-xs uppercase tracking-widest font-medium transition-all ${
               filter === c
-                ? "bg-primary text-primary-foreground shadow-gold"
-                : "border border-border text-muted-foreground hover:border-primary hover:text-foreground"
+                ? "gradient-button text-black shadow-silver"
+                : "border border-[rgba(192,192,192,0.25)] text-muted-foreground hover:border-silver hover:text-foreground"
             }`}
           >
             {c}
@@ -76,37 +60,42 @@ function Work() {
         ))}
       </div>
 
-      {/* Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
-        <AnimatePresence mode="popLayout">
-          {visible.map((p, i) => (
-            <motion.div
-              layout
-              key={p.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.4, delay: i * 0.04 }}
-              className="group relative overflow-hidden rounded-2xl bg-surface aspect-[4/5]"
-            >
-              <Link
-                to="/work/$ident"
-                params={{ ident: p.slug || p.id }}
-                className="absolute inset-0 block"
+        {visible === null ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="rounded-2xl aspect-[4/5] skeleton" />
+          ))
+        ) : visible.length === 0 ? (
+          <p className="text-muted-foreground col-span-full text-center py-20">No projects to show yet.</p>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {visible.map((p, i) => (
+              <motion.div
+                layout key={p.id}
+                initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, delay: i * 0.04 }}
+                className="border-gradient group relative overflow-hidden rounded-2xl aspect-[4/5]"
               >
-              <img src={p.image_url} alt={p.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent opacity-90" />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                <p className="text-xs uppercase tracking-widest text-gold mb-2">{p.category}</p>
-                <h3 className="font-display text-2xl font-bold mb-3">{p.title}</h3>
-                <span className="inline-flex items-center gap-1.5 text-sm text-foreground opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition">
-                  View Project <ArrowUpRight size={16} />
-                </span>
-              </div>
-              </Link>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+                <Link to="/work/$ident" params={{ ident: p.slug || p.id }} className="absolute inset-0 block">
+                  <img src={p.image_url} alt={p.title} loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ background: "linear-gradient(135deg, transparent 30%, rgba(192,192,192,0.18), transparent 70%)" }} />
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-silver mb-2">{p.category}</p>
+                    <h3 className="font-display text-2xl font-bold mb-2">{p.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{p.description}</p>
+                    {p.tools && <p className="font-mono text-[10px] text-muted-foreground/80">{p.tools}</p>}
+                    <span className="mt-3 inline-flex items-center gap-1.5 text-sm text-silver opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition">
+                      View Details <ArrowUpRight size={16} />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        )}
       </div>
     </div>
   );
