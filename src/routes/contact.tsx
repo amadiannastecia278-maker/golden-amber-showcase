@@ -1,79 +1,78 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, Phone, MapPin, ChevronDown, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Mail, MapPin, ChevronDown, Github, Linkedin, Twitter, Globe } from "lucide-react";
 import { ContactForm } from "@/components/site/ContactForm";
+import { Orbs } from "@/components/site/Orbs";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — EVIMERO" },
-      { name: "description", content: "Start a project with EVIMERO. Email, social, or send a message directly." },
-      { property: "og:title", content: "Contact EVIMERO" },
-      { property: "og:description", content: "Let's build something memorable." },
+      { title: "Contact — Amadi Annastecia Amarachi" },
+      { name: "description", content: "Start a project with Annastecia. Email, social, or send a message directly." },
+      { property: "og:title", content: "Contact Annastecia" },
+      { property: "og:description", content: "Let's build something remarkable." },
     ],
   }),
   component: Contact,
 });
 
 const faqs = [
-  { q: "What kind of projects do you take on?", a: "Brand identity systems, websites, art direction and motion. I love long-form partnerships but also one-shot launches." },
-  { q: "How long does a typical project take?", a: "Brands run 4–8 weeks, websites 6–10 weeks. Rush turnarounds available with a small surcharge." },
-  { q: "Do you work with startups?", a: "Often. If your story is sharp and your timeline is realistic, budget is rarely the blocker." },
-  { q: "What's your process?", a: "Discover → Direction → Design → Deliver. Tight loops, clear milestones, no agency theatre." },
-  { q: "Do you offer ongoing support?", a: "Yes — retainers from 10h/month for design partners who want a creative arm on call." },
+  { q: "How long does a project take?", a: "Marketing sites: 2–4 weeks. Web apps: 6–12 weeks. Mobile apps: 8–16 weeks. Faster turnarounds available with rush pricing." },
+  { q: "Do you work with international clients?", a: "Yes — I work with clients globally, with most communication async via email, Slack, or Linear." },
+  { q: "What technologies do you specialise in?", a: "React, Next.js, TypeScript, Node.js, PostgreSQL, Supabase, Flutter, and React Native." },
+  { q: "Do you offer maintenance after delivery?", a: "Absolutely. I offer monthly retainers for clients who want ongoing development, monitoring, and feature work." },
+  { q: "How do I get started?", a: "Send a message through the form below — include your timeline, budget range, and a quick description of the project." },
 ];
 
 function Contact() {
   return (
-    <div className="container mx-auto px-6 relative overflow-hidden">
-      {/* floating glow */}
-      <div className="absolute top-20 -right-40 w-[500px] h-[500px] rounded-full bg-primary/10 blur-3xl animate-float pointer-events-none" />
-      <div className="absolute top-[40%] -left-40 w-[400px] h-[400px] rounded-full bg-primary/10 blur-3xl animate-float pointer-events-none" style={{ animationDelay: "3s" }} />
+    <div className="container mx-auto px-6 relative">
+      <Orbs />
 
       <section className="pt-12 pb-12 relative">
-        <p className="text-xs uppercase tracking-[0.3em] text-gold mb-4">[Contact]</p>
-        <h1 className="font-display font-bold text-[clamp(2.8rem,9vw,8rem)] leading-[0.95] uppercase text-balance">
-          Let's <span className="text-gold italic">build</span> something.
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-silver mb-4">[Contact]</p>
+        <h1 className="font-display font-bold text-[clamp(2.6rem,9vw,7.5rem)] leading-[0.98] gradient-silver-text text-balance">
+          Let's <em className="italic">build</em> something.
         </h1>
         <p className="mt-6 max-w-xl text-muted-foreground text-lg">
-          Tell me about your project, your timeline, your wildest reference. I'll respond within 24 hours.
+          Tell me about your project, your timeline, your wildest reference. I respond within 24 hours.
         </p>
       </section>
 
-      <section className="grid lg:grid-cols-12 gap-10 pb-24">
-        <div className="lg:col-span-7 bg-surface/60 border border-border rounded-3xl p-8 md:p-10">
-          <ContactForm variant="full" source="contact" />
-        </div>
-        <aside className="lg:col-span-5 flex flex-col gap-5">
-          <InfoCard icon={<Mail size={18} />} label="Email" value="hello@evimero.studio" />
-          <InfoCard icon={<Phone size={18} />} label="WhatsApp" value="+1 (555) 010-2025" />
-          <InfoCard icon={<MapPin size={18} />} label="Studio" value="Remote · Worldwide" />
-          <div className="bg-surface/60 border border-border rounded-2xl p-6">
-            <p className="text-xs uppercase tracking-widest text-foreground/70 mb-4">Find me on</p>
+      <section className="grid lg:grid-cols-12 gap-10 pb-24 relative">
+        <aside className="lg:col-span-5 flex flex-col gap-5 order-2 lg:order-1">
+          <InfoCard icon={<Mail size={18} />} label="Email" value="amzybaby125@gmail.com" />
+          <InfoCard icon={<MapPin size={18} />} label="Based in" value="Nigeria · Worldwide" />
+          <div className="border-gradient rounded-2xl p-6 flex items-center gap-3">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+            <p className="text-sm">Currently <span className="text-silver font-medium">available</span> for freelance projects</p>
+          </div>
+          <div className="border-gradient rounded-2xl p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Find me on</p>
             <div className="flex gap-3">
-              {[Instagram, Linkedin, Twitter].map((Icon, i) => (
-                <a key={i} href="#" className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:border-primary hover:text-gold transition-colors">
+              {[Github, Linkedin, Twitter, Globe].map((Icon, i) => (
+                <a key={i} href="#" target="_blank" rel="noreferrer"
+                  className="w-11 h-11 rounded-full border border-[rgba(192,192,192,0.2)] flex items-center justify-center hover:border-silver hover:text-silver transition-all hover:-translate-y-0.5">
                   <Icon size={16} />
                 </a>
               ))}
             </div>
           </div>
-          <div className="bg-surface/60 border border-border rounded-2xl p-6 h-48 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent" />
-            <div className="absolute inset-4 rounded-xl border border-dashed border-primary/40 flex items-center justify-center text-sm text-muted-foreground">
-              📍 Studio map placeholder
-            </div>
-          </div>
         </aside>
+        <div className="lg:col-span-7 border-gradient rounded-3xl p-6 md:p-10 order-1 lg:order-2">
+          <ContactForm variant="full" source="contact" />
+        </div>
       </section>
 
-      {/* FAQ */}
       <section className="pb-32">
         <div className="text-center mb-12">
-          <p className="text-xs uppercase tracking-[0.3em] text-gold mb-3">[FAQ]</p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold uppercase">Common questions</h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-silver mb-3">[FAQ]</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold gradient-silver-text">Common questions</h2>
         </div>
-        <div className="max-w-3xl mx-auto divide-y divide-border border-y border-border">
+        <div className="max-w-3xl mx-auto divide-y divide-[rgba(192,192,192,0.15)] border-y border-[rgba(192,192,192,0.15)]">
           {faqs.map((f, i) => <FaqItem key={i} {...f} />)}
         </div>
       </section>
@@ -83,11 +82,11 @@ function Contact() {
 
 function InfoCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="bg-surface/60 border border-border rounded-2xl p-6 flex items-center gap-4 hover:border-primary/50 transition-colors">
-      <div className="w-11 h-11 rounded-full bg-primary/15 text-gold flex items-center justify-center">{icon}</div>
-      <div>
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
-        <p className="font-display text-lg font-semibold">{value}</p>
+    <div className="border-gradient rounded-2xl p-6 flex items-center gap-4">
+      <div className="w-11 h-11 rounded-full gradient-button text-black flex items-center justify-center">{icon}</div>
+      <div className="min-w-0">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">{label}</p>
+        <p className="font-sans text-base md:text-lg font-semibold truncate">{value}</p>
       </div>
     </div>
   );
@@ -98,8 +97,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   return (
     <button onClick={() => setOpen(!open)} className="w-full text-left py-6 group">
       <div className="flex items-center justify-between gap-6">
-        <h4 className="font-display text-lg md:text-xl font-semibold group-hover:text-gold transition-colors">{q}</h4>
-        <ChevronDown size={20} className={`text-gold shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+        <h4 className="font-sans text-lg md:text-xl font-semibold group-hover:text-silver transition-colors">{q}</h4>
+        <ChevronDown size={20} className={`text-silver shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </div>
       <div className={`grid transition-all duration-300 ${open ? "grid-rows-[1fr] mt-3" : "grid-rows-[0fr]"}`}>
         <p className="overflow-hidden text-muted-foreground leading-relaxed">{a}</p>

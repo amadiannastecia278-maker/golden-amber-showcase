@@ -10,16 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkRouteImport } from './routes/work'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AmasteciaAdminRouteImport } from './routes/amastecia-admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WorkIdentRouteImport } from './routes/work.$ident'
 
 const WorkRoute = WorkRouteImport.update({
   id: '/work',
   path: '/work',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -27,14 +31,9 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AmasteciaAdminRoute = AmasteciaAdminRouteImport.update({
+  id: '/amastecia-admin',
+  path: '/amastecia-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -47,77 +46,60 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WorkIdentRoute = WorkIdentRouteImport.update({
-  id: '/$ident',
-  path: '/$ident',
-  getParentRoute: () => WorkRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
-  '/auth': typeof AuthRoute
+  '/amastecia-admin': typeof AmasteciaAdminRoute
   '/contact': typeof ContactRoute
-  '/work': typeof WorkRouteWithChildren
-  '/work/$ident': typeof WorkIdentRoute
+  '/shop': typeof ShopRoute
+  '/work': typeof WorkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
-  '/auth': typeof AuthRoute
+  '/amastecia-admin': typeof AmasteciaAdminRoute
   '/contact': typeof ContactRoute
-  '/work': typeof WorkRouteWithChildren
-  '/work/$ident': typeof WorkIdentRoute
+  '/shop': typeof ShopRoute
+  '/work': typeof WorkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
-  '/auth': typeof AuthRoute
+  '/amastecia-admin': typeof AmasteciaAdminRoute
   '/contact': typeof ContactRoute
-  '/work': typeof WorkRouteWithChildren
-  '/work/$ident': typeof WorkIdentRoute
+  '/shop': typeof ShopRoute
+  '/work': typeof WorkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/admin'
-    | '/auth'
+    | '/amastecia-admin'
     | '/contact'
+    | '/shop'
     | '/work'
-    | '/work/$ident'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/admin'
-    | '/auth'
-    | '/contact'
-    | '/work'
-    | '/work/$ident'
+  to: '/' | '/about' | '/amastecia-admin' | '/contact' | '/shop' | '/work'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/admin'
-    | '/auth'
+    | '/amastecia-admin'
     | '/contact'
+    | '/shop'
     | '/work'
-    | '/work/$ident'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
-  AuthRoute: typeof AuthRoute
+  AmasteciaAdminRoute: typeof AmasteciaAdminRoute
   ContactRoute: typeof ContactRoute
-  WorkRoute: typeof WorkRouteWithChildren
+  ShopRoute: typeof ShopRoute
+  WorkRoute: typeof WorkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -129,6 +111,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -136,18 +125,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/amastecia-admin': {
+      id: '/amastecia-admin'
+      path: '/amastecia-admin'
+      fullPath: '/amastecia-admin'
+      preLoaderRoute: typeof AmasteciaAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -164,33 +146,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/work/$ident': {
-      id: '/work/$ident'
-      path: '/$ident'
-      fullPath: '/work/$ident'
-      preLoaderRoute: typeof WorkIdentRouteImport
-      parentRoute: typeof WorkRoute
-    }
   }
 }
-
-interface WorkRouteChildren {
-  WorkIdentRoute: typeof WorkIdentRoute
-}
-
-const WorkRouteChildren: WorkRouteChildren = {
-  WorkIdentRoute: WorkIdentRoute,
-}
-
-const WorkRouteWithChildren = WorkRoute._addFileChildren(WorkRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
-  AuthRoute: AuthRoute,
+  AmasteciaAdminRoute: AmasteciaAdminRoute,
   ContactRoute: ContactRoute,
-  WorkRoute: WorkRouteWithChildren,
+  ShopRoute: ShopRoute,
+  WorkRoute: WorkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -92,6 +92,54 @@ export type Database = {
         }
         Relationships: []
       }
+      templates: {
+        Row: {
+          category: string
+          created_at: string
+          currency: string
+          description: string
+          file_url: string | null
+          id: string
+          is_free: boolean
+          payment_link: string | null
+          preview_image_url: string
+          price: number
+          published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          currency?: string
+          description: string
+          file_url?: string | null
+          id?: string
+          is_free?: boolean
+          payment_link?: string | null
+          preview_image_url: string
+          price?: number
+          published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          currency?: string
+          description?: string
+          file_url?: string | null
+          id?: string
+          is_free?: boolean
+          payment_link?: string | null
+          preview_image_url?: string
+          price?: number
+          published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -125,6 +173,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_master_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"

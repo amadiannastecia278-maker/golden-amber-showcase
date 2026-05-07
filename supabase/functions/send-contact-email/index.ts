@@ -10,7 +10,7 @@ const TO_EMAIL = "amzybaby125@gmail.com";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 // Override by setting the RESEND_FROM_EMAIL secret to e.g. "EVIMERO <hello@evimero.studio>"
 // Domain MUST be verified in Resend or sends will be rejected.
-const DEFAULT_FROM = "EVIMERO Contact <onboarding@resend.dev>";
+const DEFAULT_FROM = "Annastecia Contact <onboarding@resend.dev>";
 
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
@@ -40,8 +40,8 @@ Deno.serve(async (req) => {
     const ts = new Date().toISOString();
     const html = `
       <div style="font-family: -apple-system, sans-serif; background:#f6f6f6; padding:24px;">
-        <div style="max-width:560px;margin:auto;background:#fff;border-radius:12px;padding:28px;border-top:4px solid #E5A000">
-          <h2 style="margin:0 0 4px;color:#1C1C1E">New ${escapeHtml(source || "website")} enquiry</h2>
+        <div style="max-width:560px;margin:auto;background:#fff;border-radius:12px;padding:28px;border-top:4px solid #C0C0C0">
+          <h2 style="margin:0 0 4px;color:#000">New ${escapeHtml(source || "website")} enquiry</h2>
           <p style="color:#888;margin:0 0 20px;font-size:12px">${escapeHtml(ts)}</p>
           <p><strong>Name:</strong> ${escapeHtml(full_name)}</p>
           <p><strong>Email:</strong> ${escapeHtml(email)}</p>
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
         from: Deno.env.get("RESEND_FROM_EMAIL") || DEFAULT_FROM,
         to: [TO_EMAIL],
         reply_to: email,
-        subject: `[EVIMERO] ${subject}`,
+        subject: `[Annastecia] ${subject}`,
         html,
       }),
     });

@@ -6,6 +6,7 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/work", label: "Work" },
+  { to: "/shop", label: "Shop" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -22,7 +23,6 @@ export function Navbar() {
   }, []);
 
   useEffect(() => { setOpen(false); }, [pathname]);
-
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -31,12 +31,12 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass border-b border-border/60 py-3" : "bg-transparent py-5"
+        scrolled ? "glass-strong py-3" : "bg-transparent py-5"
       }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="font-display text-2xl font-bold tracking-tight text-gold">
-          EVIMERO<span className="text-foreground">.</span>
+        <Link to="/" className="font-sans text-xl font-bold tracking-tight gradient-silver-text">
+          Annastecia<span className="text-silver">.</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
@@ -46,12 +46,10 @@ export function Navbar() {
               <Link
                 key={l.to}
                 to={l.to}
-                className="relative text-sm uppercase tracking-widest font-medium text-foreground/80 hover:text-foreground transition-colors"
+                className="group relative text-xs uppercase tracking-[0.2em] font-medium text-foreground/70 hover:text-foreground transition-colors"
               >
                 {l.label}
-                {active && (
-                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-glow" />
-                )}
+                <span className={`pointer-events-none absolute -bottom-1.5 left-0 h-px w-full origin-left transition-transform duration-500 gradient-divider ${active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
               </Link>
             );
           })}
@@ -59,9 +57,9 @@ export function Navbar() {
 
         <Link
           to="/contact"
-          className="hidden md:inline-flex items-center px-5 py-2.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary-glow transition-colors shadow-gold"
+          className="hidden md:inline-flex items-center px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest text-black gradient-button hover:shadow-glow transition-shadow"
         >
-          Let's Talk
+          Hire Me
         </Link>
 
         <button
@@ -73,15 +71,15 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile overlay */}
       {open && (
-        <div className="md:hidden fixed inset-0 z-40 bg-background/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 animate-in fade-in">
-          {links.map((l) => (
+        <div className="md:hidden fixed inset-0 z-40 bg-black/98 backdrop-blur-xl flex flex-col items-center justify-center gap-7 animate-in fade-in">
+          {links.map((l, i) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="font-display text-4xl font-bold uppercase tracking-tight hover:text-gold transition-colors"
+              style={{ animationDelay: `${i * 60}ms` }}
+              className="font-display text-4xl font-bold gradient-silver-text animate-in fade-in slide-in-from-bottom-4"
             >
               {l.label}
             </Link>
@@ -89,9 +87,9 @@ export function Navbar() {
           <Link
             to="/contact"
             onClick={() => setOpen(false)}
-            className="mt-4 px-8 py-3 rounded-full bg-primary text-primary-foreground font-semibold shadow-gold"
+            className="mt-4 px-8 py-3 rounded-full gradient-button text-black font-semibold uppercase tracking-widest text-xs"
           >
-            Let's Talk
+            Hire Me
           </Link>
         </div>
       )}
